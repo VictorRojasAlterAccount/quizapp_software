@@ -1,0 +1,25 @@
+{
+  "name": "quizapp",
+  "version": "1.0.0",
+  "description": "\"# probando\"",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RobertoCastillo1/probando.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RobertoCastillo1/probando/issues"
+  },
+  "homepage": "https://github.com/RobertoCastillo1/probando#readme",
+  "dependencies": {
+    "better-sqlite3": "^7.6.2",
+    "express": "^4.18.1"
+  }
+}
