@@ -1,10 +1,3 @@
-/*
-* VICTOR MANUEL ROJAS ACOSTA
-* VICTOR DANIEL CIFUENTES GALLEGO
-* LEIDY JHOANA CEBALLOS HERNANDEZ
-* JUAN PABLO TORRES ARIAS
-*/
-
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./mainDB.sqlite');
 const { databaseSetup } = require("./services/setup")
