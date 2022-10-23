@@ -133,7 +133,7 @@ async function loadQuestions(surveyCode) {
     const quantity = survey.questionsQuantity;
     const classroomCode = survey.classroomCode;
 
-    res = await getInfo(`getQuestionsByQuantity?data=${quantity}-${classroomCode}`);
+    res = await getInfo(`getQuestionsByClassification?data=${session.username}-${classroomCode}-${quantity}`);
     if (!res.data) return alert("Hubo un error al momento de obtener el cuestionario, es posible que no hayan preguntas registradas, intente de nuevo más tarde.");
     const questions = res.data;
 

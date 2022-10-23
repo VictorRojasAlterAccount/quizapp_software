@@ -1,19 +1,16 @@
 {
   "name": "quizapp",
   "version": "1.0.0",
-  "description": "\"# probando\"",
+  "description": "TEST",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node server.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RobertoCastillo1/probando.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/RobertoCastillo1/probando/issues"
   },

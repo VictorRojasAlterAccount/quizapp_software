@@ -96,7 +96,23 @@ function instanceSelect() {
         if (newValue.includes("*")) {
             localStorage.setItem("classroomCreateSurvey", newValue.substring(0, newValue.length - 1));
         } else {
-            localStorage.setItem("questionTypeSelected", newValue);
+            const value = makeItRegistable(newValue);
+            localStorage.setItem("questionTypeSelected", value);
         }
     });
+}
+
+function makeItRegistable(name) {
+    switch(name) {
+        case "Sentitivos-Intuitivos":
+            return "sensitiveIntuitive";
+        case "Visuales-Verbales":
+            return "visualVerbal";
+        case "Inductivos-Deductivos":
+            return "inductiveDeductive";
+        case "Secuenciales-Globales":
+            return "sequentialGlobal";
+        case "Activos-Reflexivos":
+            return "activeReflective";
+    }
 }

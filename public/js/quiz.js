@@ -104,7 +104,7 @@ async function setQuestion(currentQuestion, questionsIndex) {
     acceptingAnswers = true;
 }
 
-function checkAnswers(e, containerId, isValid, questionIndex) {
+async function checkAnswers(e, containerId, isValid, questionIndex) {
     e.preventDefault();
 
     // Se evita el caso en el que se intento respondar a otra opción en medio del cambio entre preguntas
@@ -113,6 +113,10 @@ function checkAnswers(e, containerId, isValid, questionIndex) {
 
     // Valida si la respuesta es correcta, si es así, notifica e incrementa los puntos
     if (isValid) {
+        const question = availableQuestions[questionIndex];
+        const res = await incrementClassification(question, session.username);
+        if (res.status == 400) return alert("Ha ocurrido un error al momento de guardar tu respuesta, intenta de nuevo más tarde.");
+
         incrementScore(SCORE_POINTS);
         $(containerId).css("background", "linear-gradient(32deg, rgba(11, 223, 36) 0%, rgb(41, 232, 111) 100%)");
     } else {
@@ -152,6 +156,19 @@ function openFullText(e, fullText) {
     if (!e) var e = window.event;
     e.cancelBubble = true;
     if (e.stopPropagation) e.stopPropagation();
+}
+
+async function incrementClassification(question, username) {
+    const res = await postInfo({
+        task: "increment_classification",
+        data: {
+            username,
+            questionCode: question.questionCode,
+            questionType: question.questionType
+        }
+    });
+
+    return res;
 }
 
 incrementScore = num => {

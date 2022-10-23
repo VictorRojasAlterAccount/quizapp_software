@@ -3,7 +3,7 @@ const sql = new SQLite('./mainDB.sqlite');
 const { databaseSetup } = require("./services/setup")
 databaseSetup(sql)
 
-const { operateData, getData } = require("./services/action.js")
+const { operateData, getData } = require("./services/action.js");
 
 var path = require('path');
 var express = require('express');

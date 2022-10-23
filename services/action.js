@@ -83,13 +83,6 @@ function getData(params, query) {
             if (isNullOrEmpty(questions)) return null;
             return questions;
 
-        case "getOptionsByQuestionCode":
-            entity = obtainEntity("question", "questionCode", query.code);
-            if (!entity) return null;
-            options = getOptionsByQuestionCode(query.code);
-            if (isNullOrEmpty(options)) return null;
-            return options;
-
         case "getSurveysByClassroomCode":
             entity = obtainEntity("classroom", "classroomCode", query.code);
             if (!entity) return null;
@@ -114,11 +107,16 @@ function getData(params, query) {
             if (!entity) return null;
             return entity;
 
-        case "getQuestionsByQuantity":
+        case "getQuestionsByClassification":
             data = query.data.split("-");
-            quantity = data[0];
+            username = data[0];
+            entity = obtainEntity("student", "username", username);
+            if (!entity) return null;            
             classroomCode = data[1];
-            entities = getQuestionsByQuantity(quantity, classroomCode);
+            entity = obtainEntity("classroom", "classroomCode", classroomCode);
+            if (!entity) return null;
+            quantity = data[2];
+            entities = getQuestionsByClassification(username, classroomCode, quantity);
             if (isNullOrEmpty(entities)) return null;
             return entities;
 
@@ -128,6 +126,13 @@ function getData(params, query) {
             entities = getScoresByUsername(query.username);
             if (isNullOrEmpty(entities)) return null;
             return entities;
+
+        case "getOptionsByQuestionCode":
+            entity = obtainEntity("question", "questionCode", query.code);
+            if (!entity) return null;
+            options = getOptionsByQuestionCode(query.code);
+            if (isNullOrEmpty(options)) return null;
+            return options;
     };
 }
 
@@ -190,6 +195,14 @@ function operateData(parcel) {
             entity = obtainEntity("classroom", "classroomCode", parcel.data.classroomCode);
             if (!entity) return null;
             return deleteStudentFromClassroom(parcel.data.username, parcel.data.classroomCode);
+
+        case "increment_classification":
+            entity = obtainUser(parcel.data.username);
+            if (!entity) return null;
+            entity = obtainEntity("question", "questionCode", parcel.data.questionCode);
+            if (!entity) return null;
+            return incrementClassification(parcel.data.username, parcel.data.questionType);
+
     }
 }
 
@@ -200,8 +213,8 @@ function obtainEntity(table, attr, code) {
 
 function registerQuestion(data) {
     const questionCode = generateUniqueRandomCodeFor("question", "questionCode");
-    sql.prepare("INSERT INTO question (questionCode, questionTitle, questionUrl, showToStudents, bankCode) VALUES (?,?,?,?,?)")
-        .run(questionCode, data.questionTitle, data.questionUrl, data.showToStudents, data.bankCode);
+    sql.prepare("INSERT INTO question (questionCode, questionTitle, questionUrl, questionType, showToStudents, bankCode) VALUES (?,?,?,?,?,?)")
+        .run(questionCode, data.questionTitle, data.questionUrl, data.questionType, data.showToStudents, data.bankCode);
 
     for(const option of data.answerOptions) {
         sql.prepare("INSERT INTO option (optionTitle, optionUrl, isValid, questionCode) VALUES (?,?,?,?)")
@@ -264,6 +277,9 @@ function obtainUser(username, password) {
 
 function registerDB(table, username, password) {
     sql.prepare(`INSERT INTO ${table} (username, password) VALUES (?,?)`).run(username, password);
+    sql.prepare("INSERT INTO classification (studentUsername, sensitiveIntuitive, visualVerbal, inductiveDeductive, sequentialGlobal, activeReflective) VALUES (?,?,?,?,?,?)")
+        .run(username, 0, 0, 0, 0, 0);
+
     return true;
 }
 
@@ -284,7 +300,7 @@ function getSurveysByStudentUsernameAndClassroomCode(username, classroomCode) {
     return studentSurveysLoaded;
 }
 
-function getQuestionsByQuantity(quantity, classroomCode) {
+function getQuestionsByClassification(username, classroomCode, quantity) {
     const privateBank = sql.prepare("SELECT * FROM bank WHERE classroomCode=?").get(classroomCode);
     const privateQuestions = sql.prepare("SELECT * FROM question WHERE bankCode=?").all(privateBank.bankCode);
     const publicQuestions = sql.prepare("SELECT * FROM question WHERE bankCode=?").all("1");
@@ -295,7 +311,8 @@ function getQuestionsByQuantity(quantity, classroomCode) {
     else if (publicQuestions != 0) questions = publicQuestions;
     else return [];
 
-    shuffle(questions); // Sortear los preguntas
+    const priority = getPriority(username);
+    questions.sort(compare('questionType', priority));
     return questions.slice(0, quantity);
 }
 
@@ -381,6 +398,11 @@ function scoreActuallyExists(username, surveyCode) {
     return score;
 }
 
+function incrementClassification(username, questionType) {
+    const increment = sql.prepare(`UPDATE classification SET ${questionType}=${questionType}+1 WHERE studentUsername=?`).run(username);
+    return increment;
+}
+
 function setScoreToStudent(data) {
     sql.prepare("INSERT INTO score (score, maxScore, surveyCode, studentUsername) VALUES (?,?,?,?)")
         .run(data.score, data.maxScore, data.surveyCode, data.username);
@@ -433,8 +455,46 @@ function isNullOrEmpty(arr) {
     return false;
 }
 
-function shuffle(array) {
-    array.sort(() => Math.random() - 0.5);
-  }
+function getPriority(username) {
+    let classification = sql.prepare("SELECT * FROM classification WHERE studentUsername=?").get(username);
+    classification = getTwoTopNumbersPriority(classification, 0, []);
+    return classification;
+}
+
+function getTwoTopNumbersPriority(obj, counter, results) {
+    if (counter == 2) return Object.assign(results[0], results[1]);  
+    
+    let saved = {num: 0, key: ''};
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          var val = obj[key];
+          if (val > saved.num) {
+            saved = {num: val, key};
+          }
+      }
+    }
+    
+    delete obj[saved.key]
+    counter = counter + 1;
+    results.push({[saved.key]: counter});    
+    return getTwoTopNumbersPriority(obj, counter, results);
+}
+
+function compare(key, priority, order = 'asc') {
+    return function (a, b) {
+        if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) 
+	    return 0;
+		
+	const first = (a[key].toLowerCase() in priority) ? priority[a[key]] : Number.MAX_SAFE_INTEGER;
+	const second = (b[key].toLowerCase() in priority) ? priority[b[key]] : Number.MAX_SAFE_INTEGER;
+		
+	let result = 0;
+	if (first < second) 
+	    result = -1;
+	else if (first > second) 
+	    result = 1;
+	return (order === 'desc') ? ~result : result
+    };
+}
 
 module.exports = {operateData,getData}

@@ -141,7 +141,8 @@ async function instanceQuestionVisualization(question, index) {
         <div class="wrapper" style="width: 50%; margin-top: 1%;">
             <h2>Visualización de la pregunta</h2><a class="close" href="#">&times;</a>
             <div class="content">
-                <div class="container">                    
+                <div class="container">     
+                    <p style="margin-bottom: 1em;">Tipo: ${makeItReadable(question.questionType)}</p>               
                     <p style="font-size:1em; margin-right: 1em;" class="question-title-view">${question.questionTitle}</p>
                     <div style="width: 30em; heigth: 20em; margin-top: 2%;">
                     ${question.questionUrl.length != 0 && isValidUrl(question.questionUrl) ? `<img style="object-fit: cover;" src="${question.questionUrl}"/>` : ""}
@@ -177,8 +178,8 @@ async function deleteQuestion(e, questionCode) {
 }
 
 $('#createQuestionBtn').click(async function(){
-    const questionTypeSelected = localStorage.getItem("questionTypeSelected");
-    if (!questionTypeSelected) return alert("Por favor, escribe un tipo de pregunta.");
+    const questionType = localStorage.getItem("questionTypeSelected");
+    if (!questionType) return alert("Por favor, escribe un tipo de pregunta.");
 
     const questionTitle = $("#title-text").val();
     if (questionTitle.length == 0) return alert("Por favor, escribe un enunciado para la pregunta.");
@@ -204,6 +205,7 @@ $('#createQuestionBtn').click(async function(){
     const entity = {
         questionTitle,
         questionUrl,
+        questionType,
         bankCode: await getBankCode(),
         showToStudents: showToStudentsOption,
 
@@ -324,3 +326,18 @@ function openFullText(e, fullText) {
 function openWindow(windowId) {
     window.location.assign(windowId);
 };
+
+function makeItReadable(name) {
+    switch(name) {
+        case "sensitiveIntuitive":
+            return "Sentitivos y Intuitivos";       
+        case "visualVerbal":
+            return "Visuales y Verbales";
+        case "inductiveDeductive":
+            return "Inductivos y Deductivos";
+        case "sequentialGlobal":
+            return "Secuenciales y Globales";
+        case "activeReflective":
+            return "Activos y Reflexivos";
+    }
+}
