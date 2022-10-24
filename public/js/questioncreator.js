@@ -164,7 +164,7 @@ async function instanceQuestionVisualization(question, index) {
 
 function instanceClassroomViewSelector(div) {
     const options = `
-        <li class="option-text" id="sensitiveIntuitive*">Sentitivos-Intuitivos</li>
+        <li class="option-text" id="sensitiveIntuitive*">Sensitivo-Intuitivos</li>
         <li class="option-text" id="visualVerbal*">Visuales-Verbales</li>
         <li class="option-text" id="inductiveDeductive*">Inductivos-Deductivos</li>
         <li class="option-text" id="sequentialGlobal*">Secuenciales-Globales</li>
@@ -411,7 +411,7 @@ async function setUpdateWindowData(windowId, questionCode) {
 function makeItReadable(name) {
     switch(name) {
         case "sensitiveIntuitive":
-            return "Sentitivos y Intuitivos";       
+            return "Sensitivo y Intuitivos";       
         case "visualVerbal":
             return "Visuales y Verbales";
         case "inductiveDeductive":

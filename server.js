@@ -13,6 +13,8 @@ var dir = path.join(__dirname, 'public');
 app.use(express.static(dir));
 app.use(express.json())
 
+console.log(sql.prepare("SELECT * FROM question").all())
+
 app.get("/html/:task" , (req, res) => {
     try {
         let data = getData(req.params, req.query);

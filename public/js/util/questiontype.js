@@ -105,7 +105,7 @@ function instanceSelect() {
 
 function makeItRegistable(name) {
     switch(name) {
-        case "Sentitivos-Intuitivos":
+        case "Sensitivo-Intuitivos":
             return "sensitiveIntuitive";
         case "Visuales-Verbales":
             return "visualVerbal";
