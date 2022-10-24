@@ -138,6 +138,13 @@ function getData(params, query) {
             options = getOptionsByQuestionCode(query.code);
             if (isNullOrEmpty(options)) return null;
             return options;
+
+        case "getClassificationByUsername":
+            entity = obtainUser(query.username);
+            if (!entity) return null;
+            entity = obtainEntity("classification", "studentUsername", query.username);
+            if (isNullOrEmpty(entity)) return null;
+            return entity;
     };
 }
 

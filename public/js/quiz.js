@@ -39,13 +39,19 @@ getNewQuestion = () => {
     progressText.innerText = `Pregunta ${questionCounter} de ${MAX_QUESTIONS}`;
     progressBarFull.style.width = `${(questionCounter/MAX_QUESTIONS) * 100}%`;
 
-    // De las preguntas disponibles (que ya estaban cargadas al azar)
-    // se vuelven a sortear cada vez que se responde una pregunta
-    const qIndex = Math.floor(Math.random() * availableQuestions.length);
+    const qIndex = 0; //Math.floor(Math.random() * availableQuestions.length)
     let crtQuestion = availableQuestions[qIndex];
+
+    //Mostrar resultados
+    showResults() // TEMPORAL
 
     // Maqueta la pregunta seleccionada
     setQuestion(crtQuestion, qIndex); 
+}
+
+async function showResults() {
+    const res = await getInfo(`getClassificationByUsername?username=${session.username}`);
+    console.log(res.data);
 }
 
 // Maqueta la pregunta seleccionada
