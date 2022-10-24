@@ -37,7 +37,7 @@ function setPrivateBank(options) {
             </div>
             <div class="classroom_name_area">
                 <div class="classroom_name"><p>Privado</p></div>
-                <div class="classroom_section"><p>Preguntas unicas de un classroom</p></div>
+                <div class="classroom_section"><p>Preguntas únicas de un classroom</p></div>
             </div>
             <div class="dropdown" style="margin-top: 1%; margin-left: 15%; width: 70%; height: auto">
                 <div class="select">
