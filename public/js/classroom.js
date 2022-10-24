@@ -58,7 +58,7 @@ function loadStudentView(username) {
             </div>
         </div>
 
-        <div onclick="deleteStudent(event, \'${username}\', \'${classroomSelectedCode}\')" class="delete-question-button align center right">
+        <div onclick="deleteStudent(event, \'${username}\', \'${classroomSelectedCode}\')" style="margin-left: auto; margin-right: 0.5em;" class="delete-question-button align center right">
             <i class="fas fa-bomb"></i>
         </div>
     </div>`;
@@ -124,7 +124,10 @@ async function deleteStudent(e, username, classroomCode) {
     e.cancelBubble = true;
     if (e.stopPropagation) e.stopPropagation();
 
-    let res = await postInfo({
+    const confirmation = confirm("¿Estas seguro de borrar a esta estudiante?")
+    if (!confirmation) return;
+
+    const res = await postInfo({
         task: "delete_classroom_student",
         data: {
             username, classroomCode 
