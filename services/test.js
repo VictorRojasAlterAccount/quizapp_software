@@ -106,6 +106,21 @@ describe("validateClassroomRegistered", () => {
     });
 });
 
+describe("getQuestionByCode", () => {
+    it("Verifique que existe una pregunta para el codigo dado o la respuesta es null.", () => {
+        const response = getData({task: "getQuestionByCode"}, {code: "508956"}); 
+        console.log(response);
+        if (!response) expect(response).toBeNull();
+        else expect(response).toBeTruthy();
+    });
+
+    it("Verifique que la función retorne un objeto.", () => {
+        const response = typeof getData({task: "getQuestionByCode"}, {code: "508956"}) == 'object'
+        console.log(response);
+        expect(response).toBe(true);
+    });
+});
+
 describe("getQuestionsByClassroomCode", () => {
     it("Verifique que existen preguntas para el classroom dado o la respuesta es null.", () => {
         const response = getData({task: "getQuestionsByClassroomCode"}, {code: "452332"});
@@ -247,4 +262,3 @@ describe("getOptionsByQuestionCode", () => {
         else expect(response).toBe(true);
     });
 });
-

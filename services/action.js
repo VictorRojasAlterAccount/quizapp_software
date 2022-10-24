@@ -65,6 +65,11 @@ function getData(params, query) {
             if (isNullOrEmpty(entities)) return null;
             return entities;
                
+        case "getQuestionByCode":
+            entity = obtainEntity("question", "questionCode", query.code);
+            if (!entity) return null;
+            return entity;
+
         case "getQuestionsByClassroomCode":
             entity = obtainEntity("classroom", "classroomCode", query.code);
             if (!entity) return null;
@@ -170,6 +175,11 @@ function operateData(parcel) {
             if (!entity) return null;
             return registerQuestion(parcel.data);
 
+        case "update_question":
+            entity = obtainEntity("question", "questionCode", parcel.data.questionCode);
+            if (!entity) return null;
+            return updateQuestion(parcel.data);
+
         case "delete_question":   
             entity = obtainEntity("question", "questionCode", parcel.data);
             if (!entity) return null;            
@@ -221,6 +231,15 @@ function registerQuestion(data) {
             .run(option.optionTitle, option.optionUrl, option.isValid, questionCode);
     }
 
+    return true;
+}
+
+function updateQuestion(data) {
+    if (data.questionType == 0) return sql.prepare("UPDATE question SET showToStudents=? WHERE questionCode=?")
+        .run(data.showToStudents, data.questionCode);    
+    
+    sql.prepare("UPDATE question SET questionType=?, showToStudents=? WHERE questionCode=?")
+        .run(data.questionType, data.showToStudents, data.questionCode);
     return true;
 }
 

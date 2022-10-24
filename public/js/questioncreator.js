@@ -14,9 +14,10 @@ if (session.entityName == "teacher") {
 } else if (session.entityName == "student") {
     bankTypeText.innerHTML = `Visualización de preguntas ${bankTypeSelected == "private" ? "privadas" : "publicas"}`
 }
-
 $(document).ready(function() {
-    instanceViews();
+    localStorage.setItem("updatableQuestionCode", 0);
+    instanceViews();  
+    instanceClassroomViewSelector("#select-classroom-update")
 });
 
 // Instancia las vistas segun la sesión
@@ -78,7 +79,7 @@ async function instanceViews(){
 
 function instanceCreateQuestionButton() {
     let create_question_btn = `<div class="total-width">     
-        <div onclick="openWindow('#divOne')" class="question_button_area question_create_button">
+        <div onclick="openWindow(event, '#divOne')" class="question_button_area question_create_button">
             <div class="total-width total-height white-text flex align center">                     
                 <i class="large-font fa fa-user"></i>
                 <p style="margin-left: 1em;" class="small-font white-text" id="classroom_button_text">Crear pregunta</p>                    
@@ -103,16 +104,21 @@ async function instanceQuestion(question, index) {
     const options = res.data;
 
     text = `
-    <div onclick="openWindow('#div${index}')" class="pointer question-presentation flex">
+    <div onclick="openWindow(event, '#div${index}')" class="pointer question-presentation flex">
         <div id="question-button-${index}" class="questions-text-button total-height">                    
             <p class="question-title">${formatText(question.questionTitle, MAX_QUESTION_TITLE_LENGTH)}</p>
             <p class="question-options-number">Cantidad de opciones: ${options.length}</p>
         </div>
 
         ${session.entityName == "student" ? "" : 
+        `<div onclick="openWindow(event, '#divThree', \'${question.questionCode}\')" class="update-question-button align center right">
+            <i class="fa fa-bookmark"></i>
+        </div>`}
+
+        ${session.entityName == "student" ? "" : 
         `<div onclick="deleteQuestion(event, \'${question.questionCode}\')" class="delete-question-button align center right">
             <i class="fas fa-bomb"></i>
-        </div>`}                
+        </div>`}
     </div>`
 
     return text;
@@ -156,6 +162,31 @@ async function instanceQuestionVisualization(question, index) {
     return view;
 }
 
+function instanceClassroomViewSelector(div) {
+    const options = `
+        <li class="option-text" id="sensitiveIntuitive*">Sentitivos-Intuitivos</li>
+        <li class="option-text" id="visualVerbal*">Visuales-Verbales</li>
+        <li class="option-text" id="inductiveDeductive*">Inductivos-Deductivos</li>
+        <li class="option-text" id="sequentialGlobal*">Secuenciales-Globales</li>
+        <li class="option-text" id="activeReflective*">Activos-Reflexivos</li>`;
+
+    let text = `
+    <div style="margin-bottom: 1em;" class="dropdown">
+        <div style="padding: 30px; padding-top: 15px; padding-bottom: 15px;" class="select">
+        <span>Selecciona un tipo</span>
+        <i class="fa fa-chevron-left"></i>
+        </div>
+        <input type="hidden">
+        <ul class="dropdown-menu">
+        ${options}
+        </ul>
+    </div>`
+
+    $(div).replaceWith(`<div>${text}</div>`); // Reemplazamos
+    instanceDropdown(); // Ejecutamos la instancia
+    return true;
+};
+
 async function deleteQuestion(e, questionCode) {
     e.preventDefault();
 
@@ -163,6 +194,9 @@ async function deleteQuestion(e, questionCode) {
     if (!e) var e = window.event;
     e.cancelBubble = true;
     if (e.stopPropagation) e.stopPropagation();
+
+    const confirmation = confirm("¿Estas seguro de borrar esta pregunta?")
+    if (!confirmation) return;
 
     const res = await postInfo({
         task: "delete_question",
@@ -179,7 +213,7 @@ async function deleteQuestion(e, questionCode) {
 
 $('#createQuestionBtn').click(async function(){
     const questionType = localStorage.getItem("questionTypeSelected");
-    if (!questionType) return alert("Por favor, escribe un tipo de pregunta.");
+    if (!questionType) return alert("Por favor, selecciona un tipo de pregunta.");
 
     const questionTitle = $("#title-text").val();
     if (questionTitle.length == 0) return alert("Por favor, escribe un enunciado para la pregunta.");
@@ -215,6 +249,21 @@ $('#createQuestionBtn').click(async function(){
     registerQuestion(entity);
 });
 
+
+$("#updateQuestionBtn").click(async function() {
+    const questionType = localStorage.getItem("updatableQuestionType");
+    const showToStudentsOption = showToStudentsToggle(); // Obtiene si la pregunta es publica o no a estudiantes, segun el color del switch
+
+    const entity = {
+        questionCode: localStorage.getItem("updatableQuestionCode"),
+        questionType,
+        showToStudents: showToStudentsOption,
+    }
+
+    updateQuestion(entity);
+});
+
+
 async function registerQuestion(entity) {
     const res = await postInfo({
         task: "register_question",
@@ -225,6 +274,20 @@ async function registerQuestion(entity) {
     
     if (res.status == 200) {
         alert("Pregunta registrada satisfactoriamente.");
+        window.location.assign("../html/createquestion.html");
+    }
+}
+
+async function updateQuestion(entity) {
+    const res = await postInfo({
+        task: "update_question",
+        data: entity
+    });
+
+    if (res.status == 400) return alert("No ha sido posible actualizar la pregunta, intente de nuevo más tarde.");
+    
+    if (res.status == 200) {
+        alert("Pregunta actualizada satisfactoriamente.");
         window.location.assign("../html/createquestion.html");
     }
 }
@@ -323,9 +386,27 @@ function openFullText(e, fullText) {
     window.location.assign("#divTwo");
 }
 
-function openWindow(windowId) {
-    window.location.assign(windowId);
+function openWindow(e, windowId, questionCode) {
+    if (windowId != "#divThree") return window.location.assign(windowId); 
+
+    e.preventDefault();
+    // Para evitar la propagación de eventos, ya que usamos botones anidados
+    if (!e) var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
+
+    localStorage.setItem("updatableQuestionCode", questionCode);
+    setUpdateWindowData(windowId, questionCode)
 };
+
+async function setUpdateWindowData(windowId, questionCode) {
+    //const res = await getInfo(`getQuestionByCode?code=${questionCode}`);
+    //if (!res.data) return alert("Ha ocurrido un error al obtener la información de la pregunta seleccionada. Intente de nuevo más tarde.")
+    //const question = res.data;
+    //document.querySelector("#update-title-text").innerHTML = question.questionTitle;
+    //document.querySelector("#update-image-url").innerHTML = question.questionUrl;
+    window.location.assign(windowId);
+}
 
 function makeItReadable(name) {
     switch(name) {

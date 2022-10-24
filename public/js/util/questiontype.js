@@ -56,10 +56,11 @@ function instanceSelect() {
     else{
         $('.selection p span').html($('.old-select option:first-child').html());
     }
-    
+
     $('.old-select option').each(function(){
         newValue = $(this).val();
         newHTML = $(this).html();
+
         if (newValue != "default") 
             $('.new-select').append(`<div class="new-option" data-value='${newValue}'><p>${newHTML}</p></div>`);
         else {

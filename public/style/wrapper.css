@@ -54,6 +54,11 @@ h5 {
 	height: 40%;
 }
 
+.size-updateq{
+	width: 40%;
+	height: 50%;
+}
+
 .size-createq{
 	width: 70%;
 	height: 60%;
@@ -395,7 +400,7 @@ color: #f5f5f5;
   
   /*Styling Selectbox*/
   .dropdown {
-	width: 300px;
+	width: 350px;
 	display: inline-block;
 	background-color: #fff;
 	border-radius: 2px;
@@ -405,7 +410,7 @@ color: #f5f5f5;
 	font-size: 14px;
 	color: #474747;
 	height: 100%;
-	text-align: left
+	text-align: center;
   }
   .dropdown .select {
 	  cursor: pointer;

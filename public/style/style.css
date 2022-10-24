@@ -391,7 +391,16 @@ img {
     background: rgb(226, 70, 70);
     width: 8%;
     font-size: 2em;
+    margin-left: 1%;
     border: 2px solid rgb(54, 6, 6);
+}
+
+.update-question-button{
+    cursor:pointer;
+    background: rgb(70, 226, 135);
+    width: 8%;
+    font-size: 2em;
+    border: 2px solid rgb(6, 54, 26);
 }
 
 .question-title{

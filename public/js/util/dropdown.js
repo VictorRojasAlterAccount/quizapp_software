@@ -25,7 +25,9 @@ function instanceDropdown() {
     $('.dropdown-menu li').click(function () {
         //^
         let inputVal = $(this).parents('.dropdown').find('input').val();
-        if ($(this).context.id.includes("^")) {
+        if ($(this).context.id.includes("*")) {
+            localStorage.setItem("updatableQuestionType", $(this).context.id.slice(0, -1));
+        } else if ($(this).context.id.includes("^")) {
             localStorage.setItem("classroomBankSelectionViewInput", inputVal.slice(0, -1));
         } else {
             localStorage.setItem("classroomSelectionViewInput", inputVal);
