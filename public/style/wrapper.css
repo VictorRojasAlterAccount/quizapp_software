@@ -556,7 +556,6 @@ background: #9cb6be;
 	width: 100%;
 	height: 100%;
 cursor: pointer;
-float: left;
 margin: -5px;
 padding: 5px 9px;
 }
@@ -564,7 +563,6 @@ padding: 5px 9px;
 .list__check-btn {
 color: rgb(0, 102, 255);
 cursor: pointer;
-float: right;
 margin: -5px;
 font-size: 2em;
 padding: 4px 8px;

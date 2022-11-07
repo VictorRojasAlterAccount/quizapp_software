@@ -46,23 +46,14 @@ async function instanceViews(){
     }
     
     // No hay preguntas, o si las hay, no son publicas para el estudiante, entonces notificamos
-    if (!thereIsData || (isStudent && !thereIsPublicQuestions)) {
-        $("#warn-message").parent().attr("class", "center")
-        $("#warn-message").replaceWith(`
-                <div class="warn-message-presentation">
-                    <p>
-                    ${(isStudent && !thereIsPublicQuestions)
-                    ? "No existen preguntas publicas a estudiantes en este banco" 
-                    : "No existen preguntas creadas para este banco."}
-                    </p>
-                </div>`);
-        $("#load_questions").replaceWith(`<div style="display: none"></div>`);
-        $("#load_questions_view").replaceWith(`<div style="display: none"></div>`);
-        return;
-    }
+    if (!thereIsData || (isStudent && !thereIsPublicQuestions)) return sendWarnMessage(isStudent, thereIsPublicQuestions);
 
     // Maqueta las preguntas para la vista, y para una ventana que muestra la información completa de estas
     const questions = res.data;
+    loadQuestions(questions);
+}
+
+async function loadQuestions(questions) {
     var txtQuestions = "", txtQuestionsResume = "";
 
     let index = 0;
@@ -75,6 +66,21 @@ async function instanceViews(){
     $("#load_questions").replaceWith(txtQuestions);
     $("#load_questions_view").replaceWith(txtQuestionsResume);
     $("#warn-message").replaceWith(`<div style="display: none"></div>`);
+}
+
+function sendWarnMessage(isStudent, thereIsPublicQuestions) {
+    $("#warn-message").parent().attr("class", "center")
+    $("#warn-message").replaceWith(`
+            <div class="warn-message-presentation">
+                <p>
+                ${(isStudent && !thereIsPublicQuestions)
+                ? "No existen preguntas publicas a estudiantes en este banco" 
+                : "No existen preguntas creadas para este banco."}
+                </p>
+            </div>`);
+    $("#load_questions").replaceWith(`<div style="display: none"></div>`);
+    $("#load_questions_view").replaceWith(`<div style="display: none"></div>`);
+    return;
 }
 
 function instanceCreateQuestionButton() {
