@@ -56,8 +56,7 @@ async function showResults() {
 
 // Maqueta la pregunta seleccionada
 async function setQuestion(currentQuestion, questionsIndex) {
-    let title_area = "", txt = "";
-    let dataNumberCounter = 0;
+    let title_area = "";
 
     const res = await getInfo(`getOptionsByQuestionCode?code=${currentQuestion.questionCode}`);
     const options = res.data;
@@ -76,6 +75,14 @@ async function setQuestion(currentQuestion, questionsIndex) {
 
     // Reemplaza
     titleTextImageArea.innerHTML = title_area;
+
+    loadOptions(options, questionsIndex);
+    acceptingAnswers = true;
+}
+
+function loadOptions(options, questionsIndex) {
+    let dataNumberCounter = 0;
+    let txt = "";
 
     // Maqueta las opciones y reemplaza
     for(const option of options) {
@@ -107,7 +114,6 @@ async function setQuestion(currentQuestion, questionsIndex) {
     };
 
     loadChoicesArea.innerHTML = txt;
-    acceptingAnswers = true;
 }
 
 async function checkAnswers(e, containerId, isValid, questionIndex) {
