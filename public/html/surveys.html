@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../style/radio.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.1/css/all.css" integrity="sha384-xxzQGERXS00kBmZW/6qxqJPyxW3UR0BPsL4c8ILaIWXva5kFi7TxkIIaMiKtqV1Q" crossorigin="anonymous">
 </head>
 <body>
@@ -20,6 +21,7 @@
         </div>
 
         <div class="header-color right low-margin-right">    
+            <a onclick='getSurveysReport(event)' style="margin-top: 3px" class='pointer low-margin-right white-text btn'>Generar reporte</a> 
             <div id="btnSite"></div>
         </div>
     </div>
@@ -34,7 +36,7 @@
         <div id="create-survey-button-presentation"></div>
 
         <div class="total-width total-height flex">
-            <div class="surveys-zone">
+            <div id="surveys-zone-pdf" class="surveys-zone">
                 <div id="warn-message"></div>
                 <div id="surveys-view"></div>    
             </div>
@@ -82,5 +84,6 @@
     <script src="../js/util/questiontype.js"></script>
     <script src="../js/util/dropdown.js"></script>
     <script src="../js/surveys.js"></script>
+    <script src="../js/util/pdf.js"></script> 
 </body>
 </html>

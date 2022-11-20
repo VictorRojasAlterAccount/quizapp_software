@@ -86,10 +86,15 @@ async function instanceStudentClassroomView() {
         res = await getInfo(`getSurveyByCode?code=${scoreData.surveyCode}`);
         if (!res.data) continue;                
         const survey = res.data;
+        
+        res = await getInfo(`getPriority?username=${scoreData.studentUsername}`);
+        if (!res.data) continue;
+        const learningType = Object.getOwnPropertyNames(res.data);
 
         if (survey.classroomCode == classroomSelectedCode)
             txt += `<div class="survey-results-presentation">
                 <p style="padding: 15px">${survey.surveyName}</p>
+                <p style="padding: 15px">Estilo: ${learningType.join(" y ")}</p>
                 <p style="margin-left: 15px; margin-bottom: 15px; margin-right: 15px">${scoreData.score} / ${scoreData.maxScore}</p>
             </div>`;
     }
@@ -198,8 +203,11 @@ async function instanceChart(username) {
             results.push([`${survey.surveyName}-${scoreData.surveyCode}`, scoreData.score]);
     }
 
+    res = await getInfo(`getPriority?username=${username}`);
+    const learningType = Object.getOwnPropertyNames(res.data);
+
     var chart = anychart.column(results); // Declaracion
-    chart.title("Resultados por encuesta");
+    chart.title(`Resultados por encuesta - Estilo: ${learningType.join(" y ")}`);
     chart.yScale().ticks().interval(100); // Imagenes de 100 en 100
     chart.container("chart").draw(); // Dibujar grafica
 

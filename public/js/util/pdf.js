@@ -22,3 +22,8 @@ function getQuestionsReport(event, id) {
     let element = document.getElementById(id);
     html2pdf().set(opt).from(element).save();
 }
+
+function getSurveysReport() {
+    let element = document.getElementById("surveys-zone-pdf");
+    html2pdf().from(element).save();
+}

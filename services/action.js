@@ -145,6 +145,13 @@ function getData(params, query) {
             entity = obtainEntity("classification", "studentUsername", query.username);
             if (isNullOrEmpty(entity)) return null;
             return entity;
+
+        case "getPriority":
+            entity = obtainUser(query.username);
+            if (!entity) return null;
+            entity = getPriority(query.username);
+            if (isNullOrEmpty(entity)) return null;
+            return entity;
     };
 }
 
@@ -219,9 +226,6 @@ function operateData(parcel) {
             entity = obtainEntity("question", "questionCode", parcel.data.questionCode);
             if (!entity) return null;
             return incrementClassification(parcel.data.username, parcel.data.questionType);
-
-        case "update_question_show":
-
     }
 }
 
@@ -371,6 +375,10 @@ function getQuestionsByPublicBank() {
 function getOptionsByQuestionCode(code) {
     const options = sql.prepare("SELECT * FROM option WHERE questionCode=?").all(code);
     return options;
+}
+
+function getLearningTypeByUsername(username) {
+    const entity = sql.prepare("SELECT * FROM classification ").get();
 }
 
 function getClassroomsByTeacherUsername(teacherUsername) {
