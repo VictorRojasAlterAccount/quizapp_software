@@ -244,8 +244,6 @@ function registerQuestion(data) {
 }
 
 function updateQuestion(data) {
-    console.log(data);
-
     if (data.questionType == 0) return sql.prepare("UPDATE question SET showToStudents=? WHERE questionCode=?")
         .run(data.showToStudents, data.questionCode);    
 
