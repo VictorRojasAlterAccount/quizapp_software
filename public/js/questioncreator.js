@@ -110,11 +110,17 @@ async function instanceQuestion(question, index) {
     const options = res.data;
 
     text = `
+    <div id="question-container-pdf-${index}">
     <div onclick="openWindow(event, '#div${index}')" class="pointer question-presentation flex">
         <div id="question-button-${index}" class="questions-text-button total-height">                    
             <p class="question-title">${formatText(question.questionTitle, MAX_QUESTION_TITLE_LENGTH)}</p>
             <p class="question-options-number">Cantidad de opciones: ${options.length}</p>
         </div>
+
+        ${session.entityName == "student" ? "" : 
+        `<div onclick="getQuestionsReport(event, 'div${index}-n')" class="download-question-button align center right">
+            <i class="fas fa-copy"></i>
+        </div>`}
 
         ${session.entityName == "student" ? "" : 
         `<div onclick="openWindow(event, '#divThree', \'${question.questionCode}\')" class="update-question-button align center right">
@@ -125,6 +131,7 @@ async function instanceQuestion(question, index) {
         `<div onclick="deleteQuestion(event, \'${question.questionCode}\')" class="delete-question-button align center right">
             <i class="fas fa-bomb"></i>
         </div>`}
+    </div>
     </div>`
 
     return text;
@@ -150,7 +157,7 @@ async function instanceQuestionVisualization(question, index) {
     // Maqueta
     view = `
     <div class="overlay" style="overflow-y: auto;display: block;" id="div${index}">
-        <div class="wrapper" style="width: 50%; margin-top: 1%;">
+        <div class="wrapper" style="width: 50%; margin-top: 1%;" id="div${index}-n">
             <h2>Visualización de la pregunta</h2><a class="close" href="#">&times;</a>
             <div class="content">
                 <div class="container">     
@@ -234,7 +241,7 @@ $('#createQuestionBtn').click(async function(){
     if (!everyAnswerHasTitle) return alert("Por favor, ingrese los enunciados para todas las opciones de respuesta.");
 
     const questionUrl = $("#image-url").val();
-    const showToStudentsOption = showToStudentsToggle(); // Obtiene si la pregunta es publica o no a estudiantes, segun el color del switch
+    const showToStudentsOption = showToStudentsToggle(false); // Obtiene si la pregunta es publica o no a estudiantes, segun el color del switch
 
     // Obtiene las opciones de respuesta directamente del html, 
     // la opción correcta la filtra por el color del elemento
@@ -258,12 +265,12 @@ $('#createQuestionBtn').click(async function(){
 
 $("#updateQuestionBtn").click(async function() {
     const questionType = localStorage.getItem("updatableQuestionType");
-    const showToStudentsOption = showToStudentsToggle(); // Obtiene si la pregunta es publica o no a estudiantes, segun el color del switch
+    const showToStudentsOption = showToStudentsToggle(true); // Obtiene si la pregunta es publica o no a estudiantes, segun el color del switch
 
     const entity = {
         questionCode: localStorage.getItem("updatableQuestionCode"),
         questionType,
-        showToStudents: showToStudentsOption,
+        showToStudents: showToStudentsOption
     }
 
     updateQuestion(entity);
@@ -310,8 +317,8 @@ async function getBankCode() {
     return res.data;
 }
 
-function showToStudentsToggle() {
-    const toggleRgbValue = $(".toggler-slider").css("border-color");
+function showToStudentsToggle(value) {
+    const toggleRgbValue = $(value ? "#update-slider" : ".toggler-slider").css("border-color");
     switch(toggleRgbValue) {
         case "rgb(68, 204, 102)": // YES
             return 1;
@@ -402,17 +409,8 @@ function openWindow(e, windowId, questionCode) {
     if (e.stopPropagation) e.stopPropagation();
 
     localStorage.setItem("updatableQuestionCode", questionCode);
-    setUpdateWindowData(windowId, questionCode)
-};
-
-async function setUpdateWindowData(windowId, questionCode) {
-    //const res = await getInfo(`getQuestionByCode?code=${questionCode}`);
-    //if (!res.data) return alert("Ha ocurrido un error al obtener la información de la pregunta seleccionada. Intente de nuevo más tarde.")
-    //const question = res.data;
-    //document.querySelector("#update-title-text").innerHTML = question.questionTitle;
-    //document.querySelector("#update-image-url").innerHTML = question.questionUrl;
     window.location.assign(windowId);
-}
+};
 
 function makeItReadable(name) {
     switch(name) {

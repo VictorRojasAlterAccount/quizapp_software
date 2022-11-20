@@ -25,9 +25,10 @@ async function verifySession() {
 
 function setButtons() {
     if (session) // Boton de cerrar sesión si ya existe la sesión
-        return btnSite.innerHTML = `<a href="" id="" class="btn low-margin-right white-text btn-close-session" onclick="closeSession(event)">Cerrar sesión</a>`;
+        return btnSite.innerHTML = 
+        `<a href="" id="" class="btn low-margin-right white-text btn-close-session" onclick="closeSession(event)">Cerrar sesión</a>`;
 
-    btnSite.innerHTML =  
+    btnSite.innerHTML =
     `<a href=".${btnSite.outerHTML.includes("index") ? "/html" : ""}/register.html" id="" class="btn low-margin-right">Registrarse</a>
     <a href=".${btnSite.outerHTML.includes("index") ? "/html" : ""}/login.html" id="" class="btn low-margin-right">Iniciar</a>`
 };

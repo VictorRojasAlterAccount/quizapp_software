@@ -395,7 +395,17 @@ img {
     border: 2px solid rgb(54, 6, 6);
 }
 
+.download-question-button {
+    cursor:pointer;
+    background: rgb(27, 152, 190);
+    width: 8%;
+    font-size: 2em;
+    border: 2px solid rgb(6, 54, 26);
+
+}
+
 .update-question-button{
+    margin-left: 1%;
     cursor:pointer;
     background: rgb(70, 226, 135);
     width: 8%;

@@ -220,6 +220,8 @@ function operateData(parcel) {
             if (!entity) return null;
             return incrementClassification(parcel.data.username, parcel.data.questionType);
 
+        case "update_question_show":
+
     }
 }
 
@@ -242,9 +244,11 @@ function registerQuestion(data) {
 }
 
 function updateQuestion(data) {
+    console.log(data);
+
     if (data.questionType == 0) return sql.prepare("UPDATE question SET showToStudents=? WHERE questionCode=?")
         .run(data.showToStudents, data.questionCode);    
-    
+
     sql.prepare("UPDATE question SET questionType=?, showToStudents=? WHERE questionCode=?")
         .run(data.questionType, data.showToStudents, data.questionCode);
     return true;

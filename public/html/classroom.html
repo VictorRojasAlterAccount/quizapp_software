@@ -9,6 +9,7 @@
     <script src="https://cdn.anychart.com/releases/8.0.0/js/anychart-base.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.1/css/all.css" integrity="sha384-xxzQGERXS00kBmZW/6qxqJPyxW3UR0BPsL4c8ILaIWXva5kFi7TxkIIaMiKtqV1Q" crossorigin="anonymous">
 </head>
 <body>
@@ -18,7 +19,8 @@
             <div id="userText"></div>
         </div>
 
-        <div class="header-color right low-margin-right">    
+        <div class="header-color right low-margin-right">   
+            <a onclick='getStudentsReport(event)' style="margin-top: 3px" class='pointer low-margin-right white-text btn'>Generar reporte</a> 
             <div id="btnSite"></div>
         </div>
     </div>
@@ -30,7 +32,7 @@
             </div>            
         </div>
 
-        <div class="flex">
+        <div id="formulary_container" class="flex">
             <div style="margin-top:1em;margin-left: 5em;" class="classroom_button_area white-text">
                 <div class="total-width">
                     <img src="https://gstatic.com/classroom/themes/img_bookclub.jpg">                                                
@@ -45,7 +47,7 @@
                 </div>
             </div>
 
-            <div style="margin-left: 1em; margin-top: 1em;" class="total-width total-heigth">
+            <div id="students-classroom-area-pdf" style="margin-left: 1em; margin-top: 1em;" class="total-width total-heigth">
                 <div id="load-classroom-data"></div>
             </div>
         </div>
@@ -62,8 +64,13 @@
         </div>
     </div>
 
+    <div id="pdfcontainer">
+        <div id="pdfcontent"></div>
+    </div>
+
     <script src="../js/util/transport.js"></script>
     <script src="../js/presentation.js"></script>    
+    <script src="../js/util/pdf.js"></script>    
     <script src="../js/classroom.js"></script>
 </body>
 </html>
