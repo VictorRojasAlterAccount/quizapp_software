@@ -210,7 +210,6 @@ async function instanceChart(username) {
     chart.title(`Resultados por encuesta - Estilo: ${learningType.join(" y ")}`);
     chart.yScale().ticks().interval(100); // Imagenes de 100 en 100
     chart.container("chart").draw(); // Dibujar grafica
-
     window.location.assign("#divOne"); // Mostrar vista
 }
 
