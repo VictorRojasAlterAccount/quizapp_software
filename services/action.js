@@ -225,7 +225,7 @@ function operateData(parcel) {
             if (!entity) return null;
             entity = obtainEntity("question", "questionCode", parcel.data.questionCode);
             if (!entity) return null;
-            return incrementClassification(parcel.data.username, parcel.data.questionType);
+            return incrementClassification(parcel.data.username, parcel.data.questionType, parcel.data.points);
     }
 }
 
@@ -309,7 +309,7 @@ function obtainUser(username, password) {
 
 function registerDB(table, username, password) {
     sql.prepare(`INSERT INTO ${table} (username, password) VALUES (?,?)`).run(username, password);
-    sql.prepare("INSERT INTO classification (studentUsername, sensitiveIntuitive, visualVerbal, inductiveDeductive, sequentialGlobal, activeReflective) VALUES (?,?,?,?,?,?)")
+    sql.prepare("INSERT INTO classification (studentUsername, veryHigh, high, medium, low, veryLow) VALUES (?,?,?,?,?,?)")
         .run(username, 0, 0, 0, 0, 0);
 
     return true;
@@ -434,8 +434,8 @@ function scoreActuallyExists(username, surveyCode) {
     return score;
 }
 
-function incrementClassification(username, questionType) {
-    const increment = sql.prepare(`UPDATE classification SET ${questionType}=${questionType}+1 WHERE studentUsername=?`).run(username);
+function incrementClassification(username, questionType, points) {
+    const increment = sql.prepare(`UPDATE classification SET ${questionType}=${questionType}+${points} WHERE studentUsername=?`).run(username);
     return increment;
 }
 

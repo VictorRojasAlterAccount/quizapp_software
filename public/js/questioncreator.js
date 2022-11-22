@@ -177,11 +177,11 @@ async function instanceQuestionVisualization(question, index) {
 
 function instanceClassroomViewSelector(div) {
     const options = `
-        <li class="option-text" id="sensitiveIntuitive*">Sensitivo-Intuitivos</li>
-        <li class="option-text" id="visualVerbal*">Visuales-Verbales</li>
-        <li class="option-text" id="inductiveDeductive*">Inductivos-Deductivos</li>
-        <li class="option-text" id="sequentialGlobal*">Secuenciales-Globales</li>
-        <li class="option-text" id="activeReflective*">Activos-Reflexivos</li>`;
+        <li class="option-text" id="veryHigh*">Muy alto</li>
+        <li class="option-text" id="high*">Alto</li>
+        <li class="option-text" id="medium*">Medio</li>
+        <li class="option-text" id="low*">Bajo</li>
+        <li class="option-text" id="veryLow*">Muy bajo</li>`;
 
     let text = `
     <div style="margin-bottom: 1em;" class="dropdown">
@@ -414,15 +414,15 @@ function openWindow(e, windowId, questionCode) {
 
 function makeItReadable(name) {
     switch(name) {
-        case "sensitiveIntuitive":
-            return "Sensitivo y Intuitivos";       
-        case "visualVerbal":
-            return "Visuales y Verbales";
-        case "inductiveDeductive":
-            return "Inductivos y Deductivos";
-        case "sequentialGlobal":
-            return "Secuenciales y Globales";
-        case "activeReflective":
-            return "Activos y Reflexivos";
+        case "veryHigh":
+            return "Muy alto";
+        case "high":
+            return "Alto";
+        case "medium":
+            return "Medio";
+        case "low":
+            return "Bajo";
+        case "veryLow":
+            return "Muy bajo";
     }
 }

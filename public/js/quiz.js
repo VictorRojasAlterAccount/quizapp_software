@@ -29,6 +29,8 @@ function startQuestionary() {
 
 // Función para obtener una nueva pregunta en cada ciclo.
 getNewQuestion = () => { 
+    localStorage.setItem("solveTime", (new Date()).getTime());
+
     // Si no hay preguntas disponibles o ya se ha dado respuesta a todas, se va a la vista final.
     if(availableQuestions.length === 0 || questionCounter >= MAX_QUESTIONS) {
         localStorage.setItem('scoreData', JSON.stringify({score, maxScore: MAX_QUESTIONS}));
@@ -43,16 +45,17 @@ getNewQuestion = () => {
     let crtQuestion = availableQuestions[qIndex];
 
     //Mostrar resultados
-    showResults() // TEMPORAL
+    //showResults() // TEMPORAL
 
     // Maqueta la pregunta seleccionada
     setQuestion(crtQuestion, qIndex); 
 }
 
+/*
 async function showResults() {
     const res = await getInfo(`getClassificationByUsername?username=${session.username}`);
-    console.log(res.data);
 }
+*/
 
 // Maqueta la pregunta seleccionada
 async function setQuestion(currentQuestion, questionsIndex) {
@@ -126,7 +129,8 @@ async function checkAnswers(e, containerId, isValid, questionIndex) {
     // Valida si la respuesta es correcta, si es así, notifica e incrementa los puntos
     if (isValid) {
         const question = availableQuestions[questionIndex];
-        const res = await incrementClassification(question, session.username);
+        let extraPoints = getExtraPointsByTime();
+        const res = await incrementClassification(question, session.username, extraPoints + 1);
         if (res.status == 400) return alert("Ha ocurrido un error al momento de guardar tu respuesta, intenta de nuevo más tarde.");
 
         incrementScore(SCORE_POINTS);
@@ -142,6 +146,29 @@ async function checkAnswers(e, containerId, isValid, questionIndex) {
         getNewQuestion();
     }, 1000);
 }
+ 
+function getExtraPointsByTime() {
+    let timeBefore = localStorage.getItem("solveTime") || null;
+    if (!timeBefore) return 0;
+
+    let extraPoints = 0;
+    let timeInSolve = ((new Date()).getTime() - localStorage.getItem("solveTime")) / 1000;
+
+    switch(true) {
+        case (timeInSolve < 10):
+            extraPoints = 2;
+            break;
+        case (timeInSolve < 20):
+            extraPoints = 1;
+            break;
+        case (timeInSolve < 30):
+            extraPoints = 0;
+            break;
+        }
+
+    return extraPoints;
+}
+
 
 // Función para abrir una imagen completa en una vista
 function openImage(e, url) {
@@ -170,13 +197,14 @@ function openFullText(e, fullText) {
     if (e.stopPropagation) e.stopPropagation();
 }
 
-async function incrementClassification(question, username) {
+async function incrementClassification(question, username, points) {
     const res = await postInfo({
         task: "increment_classification",
         data: {
             username,
             questionCode: question.questionCode,
-            questionType: question.questionType
+            questionType: question.questionType,
+            points
         }
     });
 

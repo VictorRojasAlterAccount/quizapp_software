@@ -101,15 +101,15 @@ function closeSelect(countOption){
 
 function makeItRegistable(name) {
     switch(name) {
-        case "Sensitivo-Intuitivos":
-            return "sensitiveIntuitive";
-        case "Visuales-Verbales":
-            return "visualVerbal";
-        case "Inductivos-Deductivos":
-            return "inductiveDeductive";
-        case "Secuenciales-Globales":
-            return "sequentialGlobal";
-        case "Activos-Reflexivos":
-            return "activeReflective";
+        case "Muy alto":
+            return "veryHigh";
+        case "Alto":
+            return "high";
+        case "Medio":
+            return "medium";
+        case "Bajo":
+            return "low";
+        case "Muy bajo":
+            return "veryLow";
     }
 }
